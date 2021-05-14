@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { ImagenService } from 'src/app/services/imagen.service';
 
 @Component({
   selector: 'app-listar-imagen',
@@ -7,9 +9,33 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ListarImagenComponent implements OnInit {
 
-  constructor() { }
+  termino: string;
+  suscripcion: Subscription;
+  listImagenes: any[] = [];
+
+  constructor(private _imagenService: ImagenService) { 
+    this.termino = '';
+    this.suscripcion = _imagenService.getTerminoBusqueda().subscribe(termino => {
+      this.termino = termino;
+      this.obtenerImagenes();
+    });
+  }
 
   ngOnInit(): void {
+  }
+
+  obtenerImagenes(){
+    this._imagenService.getImagenes(this.termino).subscribe(data => {
+      console.log(data);
+
+      if(data.hits.length === 0) {
+        this._imagenService.setError('No se encontró ningún resultado');
+        return;
+      }
+      this.listImagenes = data.hits;
+    }, error => {
+      this._imagenService.setError('Opps... ocurrió un error');
+    });
   }
 
 }
