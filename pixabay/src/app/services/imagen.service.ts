@@ -28,9 +28,9 @@ export class ImagenService {
     return this.terminoBusqueda$.asObservable();
   }
 
-  getImagenes(query: string): Observable<any> {
+  getImagenes(query: string, imagenesPorPagina: number, paginaActual: number): Observable<any> {
     const KEY = '21611197-f79c6ab3fdb611b4b1d891bb3';
-    const URL = 'https://pixabay.com/api/?key=' + KEY + '&q=' + query;
+    const URL = 'https://pixabay.com/api/?key=' + KEY + '&q=' + query + '&per_page=' + imagenesPorPagina + '&page=' + paginaActual;
     return this.http.get(URL);
   }
 }
